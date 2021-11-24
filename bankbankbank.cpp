@@ -21,18 +21,65 @@ int transferMoney(string& r, string& b);
 int checkKontoNr(string& s);
 int getPin(void* NotUsed, int argc, char** argv, char** azColName);
 int checkPin(string& s);
-
+int createNewBankAccount(string& ktnr, string& pw);
 
 
 int main()
-{
-    cout << "Geben Sie ihre Kontonr ein: "; cin >> kontoNr;
-    checkKontoNr(kontoNr);
+{   
+    int choice;
+    string createKontoNr;
+    string createPin;
 
-    cout << "Geben Sie ihre Pin ein: "; cin >> pin;
-    checkPin(pin);
+
+
+    do
+    {
+        system("cls");
+        cout << "1. Einloggen";
+        cout << "\n2. Registrieren";
+        cout << "\n3. Beenden\n\n";
+        cin >> choice;
+
+        if (choice == 1)
+        {
+
+            cout << "Geben Sie ihre Kontonr ein: "; cin >> kontoNr;
+            checkKontoNr(kontoNr);
+
+            cout << "\nGeben Sie ihre Pin ein: "; cin >> pin;
+            checkPin(pin);
+
+        }
+        if (choice == 2)
+        {
+            system("cls");
+            cout << "Vergeben Sie eine Kontonr: "; cin >> createKontoNr;
+            cout << "Waehlen Sie eine Pin: "; cin >> createPin;
+
+            createNewBankAccount(createKontoNr, createPin);
+            system("cls");
+            cout << "Registrierung war erfolgreich\n\n";
+        }
+    } while (choice != 3);
+
+
 
     return 0;
+}
+int createNewBankAccount(string& ktnr, string& pw) {
+
+    sqlite3* db;
+    char* zErrMsg = 0;
+    string rc;
+
+    rc = sqlite3_open("E:\\sqlite\\databases\\bank.db", &db);
+    string query = "INSERT INTO user (kontonr, pin) VALUES (" + ktnr + "," + pw + ");";
+    rc = sqlite3_exec(db, query.c_str(), NULL, NULL, &zErrMsg);
+
+    sqlite3_close(db);
+
+    return 0;
+
 }
 int getPin(void* NotUsed, int argc, char** argv, char** azColName) {
     int i;
@@ -80,7 +127,7 @@ int kontoStart() {
 
         cout << "\n\n 1. Moechten Sie Geld einzahlen ?";
         cout << "\n 2. Moechten Sie Geld auszahlen ?";
-        cout << "\n 3. Geld zu ueberweisen.\n\n";
+        cout << "\n 3. Geld ueberweisen.\n\n";
         cout << "\n 4. Um zu verlassen.\n\n";
         cin >> choice;
 
