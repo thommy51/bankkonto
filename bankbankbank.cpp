@@ -123,7 +123,7 @@ int kontoStart() {
     do {
         system("cls");
         balanceQuery();
-        std::cout << "\nIhr Kontostand betraegt: " << bankBalance;
+        cout << "\nIhr Kontostand betraegt: " << bankBalance;
 
         cout << "\n\n 1. Moechten Sie Geld einzahlen ?";
         cout << "\n 2. Moechten Sie Geld auszahlen ?";
@@ -145,7 +145,15 @@ int kontoStart() {
 
             cout << "Wie viel Geld moechten Sie ausbezahlen ?: "; cin >> takeMoney;
 
-            withdrawMoney(takeMoney);
+
+                if (takeMoney > bankBalance)
+                {
+                    cout << "\n-- Sie haben nicht genug Guthaben. --\n\n"; system("pause");
+                }
+                else {
+                    withdrawMoney(takeMoney);
+                }
+
         }
         else if (choice == 3) {
             system("cls");
@@ -153,7 +161,13 @@ int kontoStart() {
             cout << ("Bitte geben Sie die Kontonr des Empfaengers ein: "); cin >> recipient;
             cout << ("Bitte geben Sie den Betrag ein: "); cin >> amount;
 
-            transferMoney(recipient, amount);
+            if (amount > bankBalance)
+            {
+                cout << "\n-- Sie haben nicht genug Guthaben. --\n\n"; system("pause");
+            }
+            else {
+                transferMoney(recipient, amount);
+            }
 
         }
     } while (choice != 4);
@@ -219,7 +233,7 @@ int transferMoney(string& r, string& b) {
 
     string query = "UPDATE user SET guthaben = (guthaben - " + b + ") WHERE kontonr = " + kontoNr + "; UPDATE user SET guthaben = (guthaben + " + b + ") WHERE kontonr = " + r + ";";
 
-    rc = sqlite3_exec(db, query.c_str(), getBalance, NULL, NULL);
+    rc = sqlite3_exec(db, query.c_str(), NULL, NULL, NULL);
 
     sqlite3_close(db);
 
